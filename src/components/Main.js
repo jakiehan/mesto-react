@@ -4,9 +4,9 @@ import Card from './Card.js'
 
 const Main = (props) => {
 
-  const [userName, setUserName] = React.useState();
-  const [userDescription, setUserDescription] = React.useState();
-  const [userAvatar, setUserAvatar] = React.useState();
+  const [userName, setUserName] = React.useState('');
+  const [userDescription, setUserDescription] = React.useState('');
+  const [userAvatar, setUserAvatar] = React.useState('');
   const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
@@ -18,14 +18,6 @@ const Main = (props) => {
 
         setCards(cardsData);
       }).catch(err => {
-      console.log(`Ошибка: ${ err }`)
-    })
-
-    api.getUserInfo().then((userData) => {
-      setUserName(userData.name);
-      setUserDescription(userData.about);
-      setUserAvatar(userData.avatar);
-    }).catch(err => {
       console.log(`Ошибка: ${ err }`)
     })
   },[])
