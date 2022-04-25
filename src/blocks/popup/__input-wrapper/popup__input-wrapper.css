@@ -1,0 +1,15 @@
+.popup__input-wrapper {
+  width: 100%;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.popup__input-wrapper:last-of-type {
+  margin-bottom: 48px;
+}
+
+@media screen and (max-width: 934px) {
+  .popup__input-wrapper:last-of-type {
+    margin-bottom: 45px;
+  }
+}
