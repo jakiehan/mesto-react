@@ -1,7 +1,7 @@
 import { apiOptions } from './constants.js';
 
 class Api {
-  constructor({ url, token } ) {
+  constructor({ url, token }) {
     this._url = url;
     this._token = token;
   }
@@ -37,7 +37,7 @@ class Api {
     return this._makeRequest(promise)
   }
 
-  updateProfileInfo({ name, about }) {
+  setUserInfo({ name, about }) {
     const promise = fetch(`${this._url}/users/me`, {
       method: 'PATCH',
       headers: {
@@ -78,9 +78,10 @@ class Api {
     return this._makeRequest(promise)
   }
 
-  putLike(id) {
+  changeLikeCardStatus(id, status) {
+    const method = (status ? 'PUT' : 'DELETE')
     const promise = fetch(`${this._url}/cards/${id}/likes`, {
-      method: 'PUT',
+      method: method,
       headers: {
         authorization: this._token
       }
@@ -88,17 +89,7 @@ class Api {
     return this._makeRequest(promise)
   }
 
-  deleteLike(id) {
-    const promise = fetch(`${this._url}/cards/${id}/likes`, {
-      method: 'DELETE',
-      headers: {
-        authorization: this._token
-      }
-    })
-    return this._makeRequest(promise)
-  }
-
-  updateAvatar({ avatar }) {
+  setUserAvatar({ avatar }) {
     const promise = fetch(`${this._url}users/me/avatar`, {
       method: 'PATCH',
       headers: {

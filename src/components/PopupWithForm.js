@@ -2,13 +2,20 @@ import React from 'react';
 
 const PopupWithForm = (props) => {
 
+  const popupTypeDelete = props.name === 'type_delete-card';
+
   return (
      <div className={`popup popup_${props.name} ${props.isOpen && 'popup_opened'}`}>
       <div className="popup__container">
-        <h3 className="popup__title">{props.title}</h3>
-        {props.name !== 'type_delete-card'
+        <h3 className={`popup__title ${popupTypeDelete && 'popup__title_margin_bottom'}`}>{props.title}</h3>
+        {!popupTypeDelete
           ? (
-            <form className={`popup__form popup__form_${props.name}`} name="popup-form" noValidate>
+            <form
+              className={`popup__form popup__form_${props.name}`}
+              name="popup-form"
+              noValidate
+              onSubmit={props.onSubmit}
+            >
               <fieldset className="popup__input-info">
                 {props.children}
                 <button
@@ -21,8 +28,9 @@ const PopupWithForm = (props) => {
             </form>
           ) : (
             <button
-              className={`popup__btn-s popup__btn-s_${props.name} transparency-button transparency-button_opacity_more`}
+              className={`popup__btn-s popup__btn-s_${props.name} ${popupTypeDelete && 'popup__btn-s_position_center'} transparency-button transparency-button_opacity_more`}
               type="submit"
+              onSubmit={props.onSubmit}
             >
               {props.titleBtn}
             </button>
@@ -32,8 +40,7 @@ const PopupWithForm = (props) => {
           type="button"
           aria-label="Close button"
           onClick={props.onClose}
-        >
-        </button>
+        />
       </div>
     </div>
   )
