@@ -1,25 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-const Card = (props) => {
+const Card = ({ card, onCardDelete, onCardLike, onCardClick }) => {
 
-  const currentUser = React.useContext(CurrentUserContext);
+  const currentUser = useContext(CurrentUserContext);
 
-  const isOwn = props.card.owner._id === currentUser._id;
-  const isLiked = props.card.likes.some(like => like._id === currentUser._id);
-  const likesCount = (props.card.likes.length > 0 && props.card.likes.length);
+  const isOwn = card.owner._id === currentUser._id;
+  const isLiked = card.likes.some(like => like._id === currentUser._id);
+  const likesCount = (card.likes.length > 0 && card.likes.length);
 
-  const handleDeleteClick = () => props.onCardDelete(props.card);
-  const handleLikeClick = () => props.onCardLike(props.card);
-  const handleClick = () => props.onCardClick(props.card);
+  const handleDeleteClick = () => onCardDelete(card);
+  const handleLikeClick = () => onCardLike(card);
+  const handleClick = () => onCardClick(card);
 
   return (
     <li className="gallery__element">
       <article className="photo-card">
         <img
           className="photo-card__image"
-          src={props.card.link}
-          alt={props.card.name}
+          src={card.link}
+          alt={card.name}
           onClick={handleClick}
         /> {isOwn &&
           <button
@@ -30,7 +30,7 @@ const Card = (props) => {
           />
           }
           <div className="photo-card__info">
-            <h2 className="photo-card__image-title">{props.card.name}</h2>
+            <h2 className="photo-card__image-title">{card.name}</h2>
             <div className="photo-card__image-like-wrapper">
               <button
                 className={`photo-card__image-like ${isLiked && 'photo-card__image-like_active'} transparency-button transparency-button_opacity_less`}

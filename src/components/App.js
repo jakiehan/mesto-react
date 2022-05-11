@@ -1,5 +1,4 @@
-import React from 'react';
-import '../index.css';
+import React, { useState, useEffect } from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -7,23 +6,28 @@ import ImagePopup from './ImagePopup.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
-//import DeletePlacePopup from './DeletePlacePopup.js';
+import DeletePlacePopup from './DeletePlacePopup.js';
 import api from '../utils/api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 const App = () => {
 
-  const [currentUser, setCurrentUser] = React.useState({});
+  const [currentUser, setCurrentUser] = useState({});
 
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isPreloaderBtn, setIsPreloaderBtn] = useState(false);
 
-  const [selectedCard, setSelectedCard] = React.useState({});
+  const [cardToDelete, setCardToDelete] = useState({});
 
-  const [cards, setCards] = React.useState([]);
+  const [selectedCard, setSelectedCard] = useState({});
 
-  React.useEffect(() => {
+  const [cards, setCards] = useState([]);
+
+
+
+  useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCards()])
       .then(([userData, cardsData]) => {
         setCurrentUser(userData);
@@ -34,32 +38,41 @@ const App = () => {
   },[])
 
   const handleUpdateUser = (inputData) => {
+    setIsPreloaderBtn(true);
     api.setUserInfo(inputData)
       .then((UserInfo) => {
         setCurrentUser(UserInfo);
         closeAllPopups();
       }).catch(err => {
       console.log(`Ошибка: ${ err }`)
+    }).finally(() => {
+      setIsPreloaderBtn(false);
     })
   }
 
   const handleUpdateAvatar = (avatarUrl) => {
+    setIsPreloaderBtn(true);
     api.setUserAvatar(avatarUrl)
       .then((UserAvatar) => {
         setCurrentUser(UserAvatar);
         closeAllPopups();
       }).catch(err => {
       console.log(`Ошибка: ${ err }`)
+    }).finally(() => {
+      setIsPreloaderBtn(false);
     })
   }
 
   const handleAddPlaceSubmit = (inputData) => {
+    setIsPreloaderBtn(true);
     api.uploadCard(inputData)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       }).catch(err => {
       console.log(`Ошибка: ${ err }`)
+    }).finally(() => {
+      setIsPreloaderBtn(false);
     })
   }
 
@@ -75,25 +88,31 @@ const App = () => {
   }
 
   const handleCardDelete = (card) => {
+    setIsPreloaderBtn(true);
     api.deleteCard(card._id)
       .then(() => {
         setCards((state) => state.filter((stateCard) => stateCard._id !== card._id && stateCard));
+        closeAllPopups();
       }).catch(err => {
       console.log(`Не удалось удалить фото-карточку ${ err }`);
+    }).finally(() => {
+      setIsPreloaderBtn(false);
     })
   }
 
   const handleCardClick = (card) => setSelectedCard(card);
-
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);
   const handleAddPlaceClick = () => setIsAddPlacePopupOpen(true);
+  const handleDeletePlaceClick = (place) => setCardToDelete(place);
+
 
   const closeAllPopups = () => {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setSelectedCard({});
+    setCardToDelete({});
   }
 
   return (
@@ -107,7 +126,7 @@ const App = () => {
           onCardClick={handleCardClick}
           isCards={cards}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={handleDeletePlaceClick}
         />
         <Footer />
 
@@ -115,22 +134,26 @@ const App = () => {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          isPreloader={isPreloaderBtn}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isPreloader={isPreloaderBtn}
         />
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onUploadCard={handleAddPlaceSubmit}
+          isPreloader={isPreloaderBtn}
         />
-        {/*<DeletePlacePopup*/}
-        {/*  isOpen={isDeletePlacePopupOpen}*/}
-        {/*  onClose={closeAllPopups}*/}
-        {/*  onDeletePlace={handleCardDelete}*/}
-        {/*/>*/}
+        <DeletePlacePopup
+          card={cardToDelete}
+          onClose={closeAllPopups}
+          onCardDelete={handleCardDelete}
+          isPreloader={isPreloaderBtn}
+        />
         <ImagePopup
           card={selectedCard}
           onClose={closeAllPopups}

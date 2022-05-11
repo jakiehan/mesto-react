@@ -1,23 +1,26 @@
 import React from 'react';
 
-const ImagePopup = (props) => {
+const ImagePopup = ({ card, onClose }) => {
+
+  const isOpen = card._id && true;
 
   return (
-    <div className={`popup popup_viewing-photo ${props.card._id && 'popup_opened'}`}>
-      <div className="popup__wrapper">
+    <div
+      className={`popup popup_viewing-photo ${isOpen && 'popup_opened'}`} onClick={onClose}>
+      <div className="popup__wrapper" onClick={(e) => e.stopPropagation()}>
         <figure className="popup__viewing-form">
           <img
             className="popup__image"
-            src={`${props.card._id && props.card.link}`}
-            alt={props.card.name}
+            src={`${card._id && card.link}`}
+            alt={card.name}
           />
-          <figcaption className="popup__image-title">{props.card.name}</figcaption>
+          <figcaption className="popup__image-title">{card.name}</figcaption>
         </figure>
         <button
           className="popup__close-btn popup__close-btn_type_view transparency-button"
           type="button"
           aria-label="Close button"
-          onClick={props.onClose}
+          onClick={onClose}
         />
       </div>
     </div>

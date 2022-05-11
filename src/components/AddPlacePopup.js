@@ -1,36 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PopupWithForm from './PopupWithForm.js';
 
-const AddPlacePopup = ({ isOpen, onClose, onUploadCard }) => {
+const AddPlacePopup = ({ isOpen, onClose, onUploadCard, isPreloader }) => {
 
-  const [title, setTitle] = React.useState('');
-  const [photoUrl, setPhotoUrl] = React.useState('');
+  const [values, setValues] = useState({});
 
-  const handleChangeTitle = (e) => setTitle(e.target.value);
-  const handleChangePhotoUrl = (e) => setPhotoUrl(e.target.value);
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setValues((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     onUploadCard({
-      name: title,
-      link: photoUrl,
+      name: values.name,
+      link: values.link,
     });
   }
 
-  React.useEffect(() => {
-    setTitle('');
-    setPhotoUrl('');
+  useEffect(() => {
+    setValues({})
   }, [isOpen]);
 
   return (
     <PopupWithForm
       name={"type_card"}
       title={"Новое место"}
-      titleBtn={"Создать"}
+      btnTitle={"Создать"}
+      preloaderBtnTitle={"Создание..."}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      isPreloader={isPreloader}
     >
       <div className="popup__input-wrapper">
         <input
@@ -38,8 +43,8 @@ const AddPlacePopup = ({ isOpen, onClose, onUploadCard }) => {
           id="input-title"
           type="text"
           name="name"
-          value={title || ''}
-          onChange={handleChangeTitle}
+          value={values.name || ''}
+          onChange={handleChange}
           placeholder="Название"
           required
           minLength="2"
@@ -53,8 +58,8 @@ const AddPlacePopup = ({ isOpen, onClose, onUploadCard }) => {
           id="input-link"
           type="url"
           name="link"
-          value={photoUrl || ''}
-          onChange={handleChangePhotoUrl}
+          value={values.link || ''}
+          onChange={handleChange}
           placeholder="Ссылка на картинку"
           required
         />

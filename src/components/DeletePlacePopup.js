@@ -1,22 +1,26 @@
-// import React from 'react';
-// import PopupWithForm from './PopupWithForm.js';
-//
-// const DeletePlacePopup = ({ isOpen, onClose, onDeletePlace }) => {
-//
-//  const handleSubmit = () => {
-//      onDeletePlace();
-//   }
-//
-//   return (
-//     <PopupWithForm
-//       name={"type_delete-card"}
-//       title={"Вы уверены?"}
-//       titleBtn={"Да"}
-//       isOpen={isOpen}
-//       onClose={onClose}
-//       onSubmit={handleSubmit}
-//     />
-//   )
-// }
-//
-// export default DeletePlacePopup;
+import React from 'react';
+import PopupWithForm from './PopupWithForm.js';
+
+const DeletePlacePopup = ({ card, onClose, onCardDelete, isPreloader }) => {
+
+  const isOpen = card._id && true;
+
+  const handleSubmit = () => {
+    onCardDelete(card);
+  }
+
+  return (
+    <PopupWithForm
+      name={"type_delete-card"}
+      title={"Вы уверены?"}
+      btnTitle={"Да"}
+      preloaderBtnTitle={"Удаление..."}
+      isOpen={isOpen}
+      onClose={onClose}
+      onSubmit={handleSubmit}
+      isPreloader={isPreloader}
+    />
+  )
+}
+
+export default DeletePlacePopup;

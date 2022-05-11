@@ -1,9 +1,7 @@
-import { apiOptions } from './constants.js';
-
 class Api {
-  constructor({ url, token }) {
-    this._url = url;
-    this._token = token;
+  constructor() {
+    this._url = 'https://nomoreparties.co/v1/cohort-38/';
+    this._token = '65c30779-9ea9-44cb-b8d2-edc42f5a7e98';
   }
 
   _makeRequest(promise) {
@@ -104,6 +102,6 @@ class Api {
   }
 }
 
-const api = new Api(apiOptions);
+const api = new Api();
 
 export default api;

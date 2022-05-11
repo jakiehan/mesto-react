@@ -1,39 +1,43 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PopupWithForm from './PopupWithForm.js';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
-const EditProfilePopup = ({ isOpen, onClose, onUpdateUser }) => {
+const EditProfilePopup = ({ isOpen, onClose, onUpdateUser, isPreloader }) => {
 
-  const [name, setName] = React.useState('');
-  const [description, setDescription] = React.useState('');
+  const currentUser = useContext(CurrentUserContext);
+  const [values, setValues] = useState({});
 
-  const handleChangeName = (e) => setName(e.target.value);
-  const handleChangeDescription = (e) => setDescription(e.target.value);
-
-  const currentUser = React.useContext(CurrentUserContext);
-
-  React.useEffect(() => {
-    setName(currentUser.name);
-    setDescription(currentUser.about);
-  }, [isOpen, currentUser]);
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setValues((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     onUpdateUser({
-      name,
-      about: description,
+      name: values.name,
+      about: values.about,
     });
   }
+
+  useEffect(() => {
+    setValues(currentUser);
+  }, [isOpen, currentUser]);
 
   return (
     <PopupWithForm
       name={"type_profile"}
       title={"Редактировать профиль"}
-      titleBtn={"Сохранить"}
+      btnTitle={"Сохранить"}
+      preloaderBtnTitle={"Сохранение..."}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      isPreloader={isPreloader}
     >
       <div className="popup__input-wrapper">
         <input
@@ -41,8 +45,8 @@ const EditProfilePopup = ({ isOpen, onClose, onUpdateUser }) => {
           id="input-name"
           type="text"
           name="name"
-          value={name || ''}
-          onChange={handleChangeName}
+          value={values.name || ''}
+          onChange={handleChange}
           placeholder="Имя профиля"
           required
           minLength="2"
@@ -56,8 +60,8 @@ const EditProfilePopup = ({ isOpen, onClose, onUpdateUser }) => {
           id="input-about"
           type="text"
           name="about"
-          value={description || ''}
-          onChange={handleChangeDescription}
+          value={values.about || ''}
+          onChange={handleChange}
           placeholder="Род деятельности"
           required
           minLength="2"

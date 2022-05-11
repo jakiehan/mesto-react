@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PopupWithForm from './PopupWithForm.js';
 
-const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar }) => {
+const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isPreloader }) => {
 
-  const [value, setValue] = React.useState('');
-  const avatarRef = React.useRef();
+  const [value, setValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isValid, setIsValid] = useState(false);
+  const avatarRef = useRef();
 
-  const handleChangeAvatar = (e) => setValue(e.target.value);
+  const errorClsInput = errorMessage && 'popup__field_type_error';
+
+  const handleChangeAvatar = (e) => {
+    setValue(e.target.value);
+    // Валидацию пока смог сделать только для аватара, для остальных форм оставил браузерную,
+    // там пока не до конца понимаю как все лучше провернуть((
+    if (!e.target.validity.valid) {
+      setIsValid(false);
+      setErrorMessage(e.target.validationMessage);
+    } else {
+      setErrorMessage('');
+      setIsValid(true);
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,22 +31,27 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar }) => {
     });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue('');
+    setErrorMessage('');
+    setIsValid(false);
   }, [isOpen]);
 
   return (
     <PopupWithForm
       name={"type_avatar"}
       title={"Обновить аватар"}
-      titleBtn={"Сохранить"}
+      btnTitle={"Обновить"}
+      preloaderBtnTitle={"Обновление..."}
+      btnIsValid={isValid}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      isPreloader={isPreloader}
     >
       <div className="popup__input-wrapper">
         <input
-          className="popup__field popup__field_type_link"
+          className={`popup__field popup__field_type_link ${errorClsInput}`}
           ref={avatarRef}
           id="input-link-avatar"
           type="url"
@@ -41,7 +61,9 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar }) => {
           placeholder="Ссылка на фото"
           required
         />
-        <span className="popup__validation-error" id="input-link-avatar-error" />
+        <span className="popup__validation-error" id="input-link-avatar-error">
+          {errorMessage}
+        </span>
       </div>
     </PopupWithForm>
   )

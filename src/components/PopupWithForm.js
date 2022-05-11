@@ -1,45 +1,59 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const PopupWithForm = (props) => {
+const PopupWithForm = ({ isOpen, onClose, name, onSubmit, children, btnTitle, title, isPreloader, preloaderBtnTitle, btnIsValid }) => {
 
-  const popupTypeDelete = props.name === 'type_delete-card';
+  const popupTypeDelete = name === 'type_delete-card';
+  const popupTypeAvatar = name === 'type_avatar';
+  const btnStatus = isPreloader ? preloaderBtnTitle : btnTitle;
+  const btnClsDis = !btnIsValid && popupTypeAvatar && 'popup__btn-s_atr_disabled';
+  const btnDis = !btnIsValid && popupTypeAvatar && true;
+
+  useEffect(() => {
+    const closeAllPopupsOnEscape = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    }
+    document.addEventListener('keydown', closeAllPopupsOnEscape);
+    return () => document.removeEventListener('keydown', closeAllPopupsOnEscape);
+  })
 
   return (
-     <div className={`popup popup_${props.name} ${props.isOpen && 'popup_opened'}`}>
-      <div className="popup__container">
-        <h3 className={`popup__title ${popupTypeDelete && 'popup__title_margin_bottom'}`}>{props.title}</h3>
+     <div className={`popup popup_${name} ${isOpen && 'popup_opened'}`} onClick={onClose}>
+      <div className="popup__container" onClick={(e) => e.stopPropagation()}>
+        <h3 className={`popup__title ${popupTypeDelete && 'popup__title_margin_bottom'}`}>{title}</h3>
         {!popupTypeDelete
           ? (
             <form
-              className={`popup__form popup__form_${props.name}`}
+              className={`popup__form popup__form_${name}`}
               name="popup-form"
-              noValidate
-              onSubmit={props.onSubmit}
+              onSubmit={onSubmit}
             >
               <fieldset className="popup__input-info">
-                {props.children}
+                {children}
                 <button
-                  className={`popup__btn-s popup__btn-s_${props.name} transparency-button transparency-button_opacity_more`}
+                  className={`popup__btn-s popup__btn-s_${name} transparency-button transparency-button_opacity_more ${btnClsDis}`}
                   type="submit"
+                  disabled={btnDis}
                 >
-                  {props.titleBtn}
+                  {btnStatus}
                 </button>
               </fieldset>
             </form>
           ) : (
             <button
-              className={`popup__btn-s popup__btn-s_${props.name} ${popupTypeDelete && 'popup__btn-s_position_center'} transparency-button transparency-button_opacity_more`}
+              className={`popup__btn-s popup__btn-s_${name} ${popupTypeDelete && 'popup__btn-s_position_center'} transparency-button transparency-button_opacity_more`}
               type="submit"
-              onSubmit={props.onSubmit}
+              onClick={onSubmit}
             >
-              {props.titleBtn}
+              {btnStatus}
             </button>
           )}
         <button
-          className={`popup__close-btn popup__close-btn_${props.name} transparency-button`}
+          className={`popup__close-btn popup__close-btn_${name} transparency-button`}
           type="button"
           aria-label="Close button"
-          onClick={props.onClose}
+          onClick={onClose}
         />
       </div>
     </div>
