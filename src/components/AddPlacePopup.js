@@ -4,6 +4,16 @@ import PopupWithForm from './PopupWithForm.js';
 const AddPlacePopup = ({ isOpen, onClose, onUploadCard, isPreloader }) => {
 
   const [values, setValues] = useState({});
+  const [isValidName, setIsValidName] = useState(false);
+  const [isValidLink, setIsValidLink] = useState(false);
+  const [errorMessageName, setErrorMessageName] = useState('');
+  const [errorMessageLink, setErrorMessageLink] = useState('');
+
+  const errorClsInputName = errorMessageName && 'popup__field_type_error';
+  const errorClsInputLink = errorMessageLink && 'popup__field_type_error';
+
+  const isValidBtn = isValidName && isValidLink && true;
+
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -11,6 +21,24 @@ const AddPlacePopup = ({ isOpen, onClose, onUploadCard, isPreloader }) => {
       ...prev,
       [name]: value
     }))
+
+    if (name === "name") {
+      if (!e.target.validity.valid) {
+        setIsValidName(false);
+        setErrorMessageName(e.target.validationMessage);
+      } else {
+        setIsValidName(true);
+        setErrorMessageName('');
+      }
+    } else {
+      if (!e.target.validity.valid) {
+        setIsValidLink(false);
+        setErrorMessageLink(e.target.validationMessage);
+      } else {
+        setIsValidLink(true);
+        setErrorMessageLink('');
+      }
+    }
   }
 
   const handleSubmit = (e) => {
@@ -32,6 +60,7 @@ const AddPlacePopup = ({ isOpen, onClose, onUploadCard, isPreloader }) => {
       title={"Новое место"}
       btnTitle={"Создать"}
       preloaderBtnTitle={"Создание..."}
+      btnIsValid={isValidBtn}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
@@ -39,7 +68,7 @@ const AddPlacePopup = ({ isOpen, onClose, onUploadCard, isPreloader }) => {
     >
       <div className="popup__input-wrapper">
         <input
-          className="popup__field popup__field_type_title"
+          className={`popup__field popup__field_type_title ${errorClsInputName}`}
           id="input-title"
           type="text"
           name="name"
@@ -50,11 +79,13 @@ const AddPlacePopup = ({ isOpen, onClose, onUploadCard, isPreloader }) => {
           minLength="2"
           maxLength="30"
         />
-        <span className="popup__validation-error" id="input-title-error" />
+        <span className="popup__validation-error" id="input-title-error">
+          {errorMessageName}
+        </span>
       </div>
       <div className="popup__input-wrapper">
         <input
-          className="popup__field popup__field_type_link"
+          className={`popup__field popup__field_type_link ${errorClsInputLink}`}
           id="input-link"
           type="url"
           name="link"
@@ -63,7 +94,9 @@ const AddPlacePopup = ({ isOpen, onClose, onUploadCard, isPreloader }) => {
           placeholder="Ссылка на картинку"
           required
         />
-        <span className="popup__validation-error" id="input-link-error" />
+        <span className="popup__validation-error" id="input-link-error">
+          {errorMessageLink}
+        </span>
       </div>
     </PopupWithForm>
   )

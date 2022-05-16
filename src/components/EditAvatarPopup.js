@@ -12,8 +12,7 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isPreloader }) => {
 
   const handleChangeAvatar = (e) => {
     setValue(e.target.value);
-    // Валидацию пока смог сделать только для аватара, для остальных форм оставил браузерную,
-    // там пока не до конца понимаю как все лучше провернуть((
+
     if (!e.target.validity.valid) {
       setIsValid(false);
       setErrorMessage(e.target.validationMessage);

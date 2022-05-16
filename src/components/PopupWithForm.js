@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 const PopupWithForm = ({ isOpen, onClose, name, onSubmit, children, btnTitle, title, isPreloader, preloaderBtnTitle, btnIsValid }) => {
 
   const popupTypeDelete = name === 'type_delete-card';
-  const popupTypeAvatar = name === 'type_avatar';
+  //const popupTypeAvatar = name === 'type_avatar';
   const btnStatus = isPreloader ? preloaderBtnTitle : btnTitle;
-  const btnClsDis = !btnIsValid && popupTypeAvatar && 'popup__btn-s_atr_disabled';
-  const btnDis = !btnIsValid && popupTypeAvatar && true;
+  const btnClsDis = !btnIsValid && 'popup__btn-s_atr_disabled';
+  const btnDis = !btnIsValid && true;
 
   useEffect(() => {
     const closeAllPopupsOnEscape = (e) => {
@@ -19,8 +19,8 @@ const PopupWithForm = ({ isOpen, onClose, name, onSubmit, children, btnTitle, ti
   })
 
   return (
-     <div className={`popup popup_${name} ${isOpen && 'popup_opened'}`} onClick={onClose}>
-      <div className="popup__container" onClick={(e) => e.stopPropagation()}>
+     <div className={`popup popup_${name} ${isOpen && 'popup_opened'}`} onMouseDown={onClose}>
+      <div className="popup__container" onMouseDown={(e) => e.stopPropagation()}>
         <h3 className={`popup__title ${popupTypeDelete && 'popup__title_margin_bottom'}`}>{title}</h3>
         {!popupTypeDelete
           ? (
@@ -28,6 +28,7 @@ const PopupWithForm = ({ isOpen, onClose, name, onSubmit, children, btnTitle, ti
               className={`popup__form popup__form_${name}`}
               name="popup-form"
               onSubmit={onSubmit}
+              noValidate
             >
               <fieldset className="popup__input-info">
                 {children}
