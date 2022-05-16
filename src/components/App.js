@@ -100,26 +100,6 @@ const App = () => {
     })
   }
 
-  // const checkInputValidity = (e, obj) => {
-  //   if (obj === value) {
-  //     if (!e.target.validity.valid) {
-  //       setIsValidName(false);
-  //       setErrorMessageName(e.target.validationMessage);
-  //     } else {
-  //       setIsValidName(true);
-  //       setErrorMessageName('');
-  //     }
-  //   } else {
-  //     if (!e.target.validity.valid) {
-  //       setIsValidAbout(false);
-  //       setErrorMessageAbout(e.target.validationMessage);
-  //     } else {
-  //       setIsValidAbout(true);
-  //       setErrorMessageAbout('');
-  //     }
-  //   }
-  // }
-
   const handleCardClick = (card) => setSelectedCard(card);
   const handleEditAvatarClick = () => setIsEditAvatarPopupOpen(true);
   const handleEditProfileClick = () => setIsEditProfilePopupOpen(true);

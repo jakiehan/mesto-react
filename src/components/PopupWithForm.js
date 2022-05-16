@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 const PopupWithForm = ({ isOpen, onClose, name, onSubmit, children, btnTitle, title, isPreloader, preloaderBtnTitle, btnIsValid }) => {
 
   const popupTypeDelete = name === 'type_delete-card';
-  //const popupTypeAvatar = name === 'type_avatar';
   const btnStatus = isPreloader ? preloaderBtnTitle : btnTitle;
   const btnClsDis = !btnIsValid && 'popup__btn-s_atr_disabled';
   const btnDis = !btnIsValid && true;
