@@ -16,7 +16,7 @@
 - JavaScript
 - React
 - CSS (Flex, Grid)
-- HTML
+- JSX
 - работа в графическом редакторе Figma
 - файловая структура БЭМ Nested
 - работа с API
